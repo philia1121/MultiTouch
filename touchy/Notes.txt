@@ -1,0 +1,2 @@
+gesture好像只能作用在有裝在gesture相關.cs的gameobject上面
+對空場景好像沒有辦法
