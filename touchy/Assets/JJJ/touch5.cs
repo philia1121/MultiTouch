@@ -5,13 +5,13 @@ using UnityEngine.VFX;
 using TouchScript;
 using TouchScript.Pointers;
 using UnityEngine.Events;
+using System.Linq; // for ToList(), Except()
 
-// deprecated
-public class touch4 : MonoBehaviour
+public class touch5 : MonoBehaviour
 {
     public Dictionary<int, Vector2> touchy = new Dictionary<int, Vector2>();
 
-    public List<Vector2> G, G2 = new List<Vector2>();
+    public List<Vector2> G,Used = new List<Vector2>();
 
     private void OnEnable()
     {
@@ -40,15 +40,17 @@ public class touch4 : MonoBehaviour
         {
             //print(pointer.Id + ":pressed" + pointer.Position);
             touchy.Add(pointer.Id, pointer.Position); 
+            print("pressed");
         }
 
-        G.Clear();
-        GetDic();
-        
+        //printDic();
+        G = touchy.Values.ToList();
+        G = G.Except(Used).ToList();
+
         if(G.Count >= 3)
         {
+            print("go sort");
             sorting(G,4);
-            print("first sorting");
         }
         
     }
@@ -58,30 +60,25 @@ public class touch4 : MonoBehaviour
         foreach (var pointer in e.Pointers)
         {
             //print(pointer.Id + ":released"+ pointer.Position);
+            if(Used.Contains(touchy[pointer.Id]))
+            {
+                Used.Remove(touchy[pointer.Id]);
+            }
             touchy.Remove(pointer.Id);
         }
 
-        G.Clear();
     }
     
- 
 
     void printDic()
     {
         print(touchy.Count);
         foreach(KeyValuePair<int, Vector2> kvp in touchy)
         {
-            print("POINTER" + kvp.Key + " " + kvp.Value);
+            print(kvp.Key + " " + kvp.Value);
         }
     }
     
-    void GetDic()
-    {
-        foreach(KeyValuePair<int, Vector2> kvp in touchy)
-        {
-            G.Add(kvp.Value);
-        }
-    }
 
     public GameObject prefab;
     void sorting(List<Vector2> All,int radius)
@@ -99,14 +96,7 @@ public class touch4 : MonoBehaviour
 
         if(Near.Count > 3)
         {
-            // foreach(var n in Near)
-            // {
-            //     G2.Add(n);
-            // }
-            // sorting(G2,3);
-            // 從這邊開始爆掉的
-
-            print("second sorting");
+            print("need to sort again");
         }
         else if(Near.Count == 3)
         {
@@ -114,6 +104,7 @@ public class touch4 : MonoBehaviour
             foreach(var pos in Near)
             {
                 center = center +  Camera.main.ScreenToWorldPoint(new Vector3(pos.x, pos.y, 8.0f));
+                Used.Add(pos);
             }
             
             Instantiate(prefab, center/3, Quaternion.identity);
@@ -130,7 +121,5 @@ public class touch4 : MonoBehaviour
             sorting(All, radius);
         }
         
-
     }
-
 }

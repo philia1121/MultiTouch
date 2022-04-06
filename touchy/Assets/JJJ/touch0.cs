@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 public class touch0 : MonoBehaviour
 {
-    Dictionary<Pointer, GameObject> BallArray = new Dictionary<Pointer, GameObject>();
+    public Dictionary<int, Vector2> touchy = new Dictionary<int, Vector2>();
    
 
     private void OnEnable()
@@ -45,7 +45,6 @@ public class touch0 : MonoBehaviour
     {
         foreach (var pointer in e.Pointers)
         {
-            BallArray.Remove(pointer);
             print(pointer.Id + ":released" + " " + pointer.Position);
         }
     }

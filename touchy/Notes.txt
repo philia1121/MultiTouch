@@ -1,2 +1,9 @@
 gesture好像只能作用在有裝在gesture相關.cs的gameobject上面
 對空場景好像沒有辦法
+cluster也一樣
+
+pointersPressed相當於GetKeyDown
+pointersRelease相當於GetKeyUp
+pointersPressed跟pointersRelease的pointer.Position不一定會一樣
+
+pointer.Position是輸出screen coordinates 螢幕比例改變也會更動

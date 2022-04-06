@@ -538,11 +538,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1193752581}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f53c536e0aae696488657f20244a6fe9, type: 3}
+  m_Script: {fileID: 11500000, guid: b83f264028297954682f8607abe83964, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   G: []
-  G2: []
+  Used: []
   prefab: {fileID: 6563526514206364499, guid: 8a53c2b971ac41749a05fa341a50647e, type: 3}
 --- !u!114 &1193752586
 MonoBehaviour:
