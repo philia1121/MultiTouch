@@ -7,15 +7,15 @@ using TouchScript.Pointers;
 using UnityEngine.Events;
 using System.Linq; // for ToList(), Except()
 
+//搭配prefabBehaviour0
 public class touch7 : MonoBehaviour
 {
-    public Dictionary<int, Vector2> touchy = new Dictionary<int, Vector2>();
+    private Dictionary<int, Vector2> touchy = new Dictionary<int, Vector2>();
     
     public int R = 4;
     public List<Material> mat = new List<Material>();
-    [HideInInspector]
-    public List<Vector2> G,Used = new List<Vector2>();
-    public List<int> side = new List<int>();
+    private List<Vector2> G,Used = new List<Vector2>();
+    private List<int> side = new List<int>();
     private int cubeID = 1;
     
 
@@ -102,10 +102,7 @@ public class touch7 : MonoBehaviour
                 Used.Add(pos);
             }
             
-            GetSide(Near);
-            var type = TriangleType(side[0], side[1], side[2]);
-            //Instantiate(prefab, center/3, Quaternion.identity);
-            CreateCube(prefab, center/3, Quaternion.identity, cubeID, type, Near);
+            CreateCube(prefab, center/3, cubeID, Near);
         }
         
         foreach(var value in Near)
@@ -121,70 +118,19 @@ public class touch7 : MonoBehaviour
         
     }
 
-    void GetSide(List<Vector2> p)
-    {
-        if(side.Any())
-        {
-            side.Clear();
-        }
-        side.Add(Mathf.RoundToInt(Vector2.Distance(p[0], p[1])));
-        side.Add(Mathf.RoundToInt(Vector2.Distance(p[0], p[2])));
-        side.Add(Mathf.RoundToInt(Vector2.Distance(p[1], p[2])));
-
-        side.Sort();
-        // side[0] < side[1] < side[2] 三角形三邊
-        //    a    <    b    <    c
-    }
-
-    string TriangleType(int a, int b, int c)
-    {
-        
-        if(Mathf.Abs((a+b+c)/3-a)<20 && Mathf.Abs((a+b+c)/3-b)<20 && Mathf.Abs((a+b+c)/3-c)<20)
-        {
-            //prefab.GetComponent<Renderer>().material = mat[2];
-            return "正三角形";
-        }
-        else
-        {
-            float BIGcos = CosC(Mathf.RoundToInt(a/10),Mathf.RoundToInt(b/10),Mathf.RoundToInt(c/10)); 
-            if(Mathf.Abs(BIGcos) < 0.15f)
-            {
-                //prefab.GetComponent<Renderer>().material = mat[1];
-                return "直角三角形";
-            }
-            else if(BIGcos > 0.15f)
-            {
-                //prefab.GetComponent<Renderer>().material = mat[0];
-                return "銳角三角形";
-            }
-            else
-            {
-                //prefab.GetComponent<Renderer>().material = mat[3];
-                return "鈍角三角形";
-            }
-            
-        }
-    }
-
-    float CosC(int a, int b, int c)
-    {
-        return (Mathf.Pow(a,2)+Mathf.Pow(b,2)-Mathf.Pow(c,2))/(2*a*b);
-    }
-
     //生成prefab的同時把與其相關的一些資料丟給他
-    void CreateCube(GameObject obj, Vector3 prefabcords, Quaternion q, int id, string type, List<Vector2> points)
+    void CreateCube(GameObject obj, Vector3 prefabcords, int id, List<Vector2> points)
     {
-        var prefab = Instantiate(obj, prefabcords, q);
+        var prefab = Instantiate(obj, prefabcords, Quaternion.identity);
         prefab.name = "cube" + id.ToString();
-        prefab.GetComponent<prefabBehaviour>().id = id;
-        prefab.GetComponent<prefabBehaviour>().tritype = type;
+        prefab.GetComponent<prefabBehaviour0>().id = id;
         cubeID++;
 
         foreach(var p in points) //把生成這個prefab的三個點座標傳過去
         {
-            prefab.GetComponent<prefabBehaviour>().ABC.Add(p);
-            prefab.GetComponent<prefabBehaviour>().centercords += p;
+            prefab.GetComponent<prefabBehaviour0>().ABC.Add(p);
+            prefab.GetComponent<prefabBehaviour0>().centercords += p;
         }
-        prefab.GetComponent<prefabBehaviour>().centercords = prefab.GetComponent<prefabBehaviour>().centercords/3;
+        prefab.GetComponent<prefabBehaviour0>().centercords = prefab.GetComponent<prefabBehaviour0>().centercords/3;
     }
 }

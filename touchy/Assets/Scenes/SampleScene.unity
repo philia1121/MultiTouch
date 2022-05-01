@@ -547,9 +547,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 0e191b68e78e2cc42815ad45a9cfb26e, type: 2}
   - {fileID: 2100000, guid: 1d63c7475180290499759fed116ecfc3, type: 2}
   - {fileID: 2100000, guid: 5243d8dfd83cebb489455e95dfd83306, type: 2}
-  G: []
-  Used: []
-  side: 
   prefab: {fileID: 2530074785214582413, guid: 3f2f0dce67066c24f85c7ce8ea43b47a, type: 3}
 --- !u!114 &1193752584
 MonoBehaviour:
