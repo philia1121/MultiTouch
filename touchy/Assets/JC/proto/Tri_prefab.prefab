@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -1165320319289487584}
   m_Layer: 0
   m_Name: Tri_prefab
-  m_TagString: Untagged
+  m_TagString: triangle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,6 +48,7 @@ MonoBehaviour:
   tritype: 
   centercords: {x: 0, y: 0}
   ABC: []
+  dir: {fileID: 5814715961725757893, guid: 0c53edfe626d6b04f8d3e6e2f2a6a308, type: 3}
 --- !u!120 &-1165320319289487584
 LineRenderer:
   m_ObjectHideFlags: 0

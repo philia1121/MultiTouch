@@ -13,7 +13,6 @@ public class touch7 : MonoBehaviour
     private Dictionary<int, Vector2> touchy = new Dictionary<int, Vector2>();
     
     public int R = 4;
-    public List<Material> mat = new List<Material>();
     private List<Vector2> G,Used = new List<Vector2>();
     private List<int> side = new List<int>();
     private int cubeID = 1;
@@ -122,7 +121,7 @@ public class touch7 : MonoBehaviour
     void CreateCube(GameObject obj, Vector3 prefabcords, int id, List<Vector2> points)
     {
         var prefab = Instantiate(obj, prefabcords, Quaternion.identity);
-        prefab.name = "cube" + id.ToString();
+        prefab.name = "tri" + id.ToString();
         prefab.GetComponent<prefabBehaviour0>().id = id;
         cubeID++;
 

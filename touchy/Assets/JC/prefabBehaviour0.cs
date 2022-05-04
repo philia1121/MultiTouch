@@ -7,6 +7,7 @@ using TouchScript.Pointers;
 using UnityEngine.Events;
 using System;
 
+//登記三角形組成點座標、邊長等資料的多項list
 public class points_side : IComparable<points_side>
 {
     public Vector2 point1,point2;
@@ -48,6 +49,8 @@ public class prefabBehaviour0 : MonoBehaviour
     private List<points_side> sides = new List<points_side>(); //轉換計算得三點與對應邊長
     private LineRenderer linerenderer;
 
+    public GameObject dir;
+
     private void Start()
     {
         linerenderer = this.GetComponent<LineRenderer>();
@@ -55,17 +58,19 @@ public class prefabBehaviour0 : MonoBehaviour
         tritype = TriangleType(sides[0].side, sides[1].side, sides[2].side);
 
         //畫出三角形
-        for(int i = 0; i<4 ; i++)
+        for(int i = 0; i<4 ; i++)//0123
         {
-            if(i<3)
+            if(i<3)//012
             {
                 linerenderer.SetPosition(i, Camera.main.ScreenToWorldPoint(new Vector3(ABC[i].x, ABC[i].y, 8.0f)));
             }
-            else
+            else//3
             {
                 linerenderer.SetPosition(i, Camera.main.ScreenToWorldPoint(new Vector3(ABC[0].x, ABC[0].y, 8.0f)));
             }
         }
+        //顯示長邊面朝方向
+        //facing();
     }
 
     //轉換求點與對應邊長
@@ -81,7 +86,7 @@ public class prefabBehaviour0 : MonoBehaviour
     //分辨三角形種類+根據種類分配line顏色
     string TriangleType(int a, int b, int c)
     {
-        if(Mathf.Abs((a+b+c)/3-a)<20 && Mathf.Abs((a+b+c)/3-b)<20 && Mathf.Abs((a+b+c)/3-c)<20)
+        if(Mathf.Abs((a+b+c)/3-a)<15 && Mathf.Abs((a+b+c)/3-b)<15 && Mathf.Abs((a+b+c)/3-c)<15)
         {
             linerenderer.startColor = new Color(0, 0.3f, 1, 1);
             linerenderer.endColor = linerenderer.startColor;
@@ -89,7 +94,7 @@ public class prefabBehaviour0 : MonoBehaviour
         }
         else
         {
-            float BIGcos = CosC(Mathf.RoundToInt(a/10),Mathf.RoundToInt(b/10),Mathf.RoundToInt(c/10)); 
+            float BIGcos = CosC(a,b,c); 
             if(Mathf.Abs(BIGcos) < 0.15f)
             {
                 linerenderer.startColor = new Color(1, 0.6f, 0, 1);
@@ -110,14 +115,22 @@ public class prefabBehaviour0 : MonoBehaviour
             }
             
         }
-
-        
     }
     
     //求最大角cos值
     float CosC(int a, int b, int c)
     {
         return (Mathf.Pow(a,2)+Mathf.Pow(b,2)-Mathf.Pow(c,2))/(2*a*b);
+    }
+
+    void facing()
+    {
+        if(tritype != "正三角形")
+        {
+            var midcords = Camera.main.ScreenToWorldPoint(new Vector3((sides[2].point1.x+sides[2].point2.x)/2, (sides[2].point1.y+sides[2].point2.y)/2, 8.0f));
+            var facing = new Vector3(-midcords.y, 0, midcords.x);
+            Instantiate(dir, midcords, Quaternion.Euler(facing));
+        }
     }
 
 }
