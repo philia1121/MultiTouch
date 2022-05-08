@@ -16,6 +16,7 @@ public class touch7 : MonoBehaviour
     private List<Vector2> G,Used = new List<Vector2>();
     private List<int> side = new List<int>();
     private int cubeID = 1;
+    public bool cam;
     
 
     private void OnEnable()
@@ -97,11 +98,13 @@ public class touch7 : MonoBehaviour
             Vector3 center = new Vector3(0,0,0);
             foreach(var pos in Near)
             {
-                center = center +  Camera.main.ScreenToWorldPoint(new Vector3(pos.x, pos.y, 8.0f));
+                center = center +  Camera.main.ScreenToWorldPoint(new Vector3(pos.x, pos.y, 0));
                 Used.Add(pos);
             }
             
-            CreateCube(prefab, center/3, cubeID, Near);
+            CreateCube(prefab, new Vector3(center.x/3, center.y/3, 8.0f), cubeID, Near, cam);
+            //cam = false; //要有人通知他到底上一次有沒有生webcamcube出來，才知道要不要換
+
         }
         
         foreach(var value in Near)
@@ -118,18 +121,19 @@ public class touch7 : MonoBehaviour
     }
 
     //生成prefab的同時把與其相關的一些資料丟給他
-    void CreateCube(GameObject obj, Vector3 prefabcords, int id, List<Vector2> points)
+    void CreateCube(GameObject obj, Vector3 prefabcoords, int id, List<Vector2> points, bool tf)
     {
-        var prefab = Instantiate(obj, prefabcords, Quaternion.identity);
+        var prefab = Instantiate(obj, prefabcoords, Quaternion.identity);
         prefab.name = "tri" + id.ToString();
         prefab.GetComponent<prefabBehaviour0>().id = id;
+        prefab.GetComponent<prefabBehaviour0>().camOn = tf;
         cubeID++;
 
         foreach(var p in points) //把生成這個prefab的三個點座標傳過去
         {
             prefab.GetComponent<prefabBehaviour0>().ABC.Add(p);
-            prefab.GetComponent<prefabBehaviour0>().centercords += p;
+            prefab.GetComponent<prefabBehaviour0>().centercoords += p;
         }
-        prefab.GetComponent<prefabBehaviour0>().centercords = prefab.GetComponent<prefabBehaviour0>().centercords/3;
+        prefab.GetComponent<prefabBehaviour0>().centercoords = prefab.GetComponent<prefabBehaviour0>().centercoords/3;
     }
 }

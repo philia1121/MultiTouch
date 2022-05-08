@@ -45,10 +45,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  tritype: 
-  centercords: {x: 0, y: 0}
+  centercoords: {x: 0, y: 0}
   ABC: []
-  dir: {fileID: 5814715961725757893, guid: 0c53edfe626d6b04f8d3e6e2f2a6a308, type: 3}
+  tritype: 
+  dirtype: 0
+  dir: {x: 0, y: 0}
+  line_trans: 0.5
+  camOn: 1
+  dir_obj: {fileID: 5814715961725757893, guid: 0c53edfe626d6b04f8d3e6e2f2a6a308, type: 3}
+  cam_obj: {fileID: 4036587308662527871, guid: 2074c07fa3fcdcc4e9a2539ea23397d7, type: 3}
 --- !u!120 &-1165320319289487584
 LineRenderer:
   m_ObjectHideFlags: 0
