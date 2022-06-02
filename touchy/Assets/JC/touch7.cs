@@ -125,15 +125,18 @@ public class touch7 : MonoBehaviour
     {
         var prefab = Instantiate(obj, prefabcoords, Quaternion.identity);
         prefab.name = "tri" + id.ToString();
-        prefab.GetComponent<prefabBehaviour0>().id = id;
-        prefab.GetComponent<prefabBehaviour0>().camOn = tf;
+        
+        var behaviour = prefab.GetComponent<prefabBehaviour0>();
+        behaviour.id = id;
+        behaviour.camOn = tf;
+        behaviour.t7 = this.GetComponent<touch7>();
         cubeID++;
 
         foreach(var p in points) //把生成這個prefab的三個點座標傳過去
         {
-            prefab.GetComponent<prefabBehaviour0>().ABC.Add(p);
-            prefab.GetComponent<prefabBehaviour0>().centercoords += p;
+            behaviour.ABC.Add(p);
+            behaviour.centercoords += p;
         }
-        prefab.GetComponent<prefabBehaviour0>().centercoords = prefab.GetComponent<prefabBehaviour0>().centercoords/3;
+        behaviour.centercoords = behaviour.centercoords/3;
     }
 }

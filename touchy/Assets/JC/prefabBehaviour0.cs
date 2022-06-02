@@ -45,13 +45,13 @@ public class points_side : IComparable<points_side>
 public class prefabBehaviour0 : MonoBehaviour
 {
     public int id;
-    public Vector2 centercoords; //三角形重心座標((A+B+C)/3)
+    [HideInInspector]public Vector2 centercoords; //三角形重心座標((A+B+C)/3)
     public List<Vector2> ABC = new List<Vector2>(); //接touch端得到的三點
     public bool camOn;
+    [HideInInspector]public touch7 t7;
 
     [SerializeField]private string tritype;
-    [SerializeField]private int dirtype;
-    [SerializeField]private Vector2 dir;
+    private Vector2 dir;
     private List<points_side> sides = new List<points_side>(); //轉換計算得三點與對應邊長
     private LineRenderer linerenderer;
     [SerializeField]private float line_trans;
@@ -81,6 +81,8 @@ public class prefabBehaviour0 : MonoBehaviour
         //找最長邊面朝方向
         LongSideDir(sides[2].point1, sides[2].point2, sides[2].corner);
         showDir();
+
+        CreateCam();
 
         
     }
@@ -140,83 +142,22 @@ public class prefabBehaviour0 : MonoBehaviour
     //找最長邊面朝方向向量dir
     void LongSideDir(Vector2 A, Vector2 B, Vector2 C)
     {
-        // 設三角形ABC，最大角為角C 
-        
-        //給Cx判斷C在AB的左還是右
-        var AB = getV(A,B);
-        var CX = A.x+ (((C.y-A.y)/AB.y)*AB.x); //AB上有點C'(CX, C.y)
-       
-        dir = new Vector2(AB.y,-AB.x);
-        
-        //判斷dir的xy正負組合
-        if(Mathf.Sign(AB.x)*Mathf.Sign(AB.y)>0) //AB為++/--，dir為+-/-+
-        {
-            if(C.x>CX) //C在AB右，dir為-+
-            {
-                dirtype = 2;
-                if(Mathf.Sign(dir.x)>0)
-                {
-                    dir = -dir;
-                }
-            }
-            else //C在AB左，dir為+-
-            {
-                dirtype = 4;
-                if(Mathf.Sign(dir.x)<0)
-                {
-                    dir = -dir;
-                }
-            }
-        }
-        else if(Mathf.Sign(AB.x)*Mathf.Sign(AB.y)<0) //AB為-+/+-，dir為++/--
-        {
-            if(C.x>CX) //C在AB右，dir為--
-            {
-                dirtype = 3;
-                if(Mathf.Sign(dir.x)>0)
-                {
-                    dir = -dir;
-                }
-            }
-            else //C在AB左，dir為++
-            {
-                dirtype = 1;
-                if(Mathf.Sign(dir.x)<0)
-                {
-                    dir = -dir;
-                }
-            }
-        }
-        else //AB是垂直線或水平線
-        {
-            var CY = A.y+ (((C.x-A.x)/AB.x)*AB.y); //AB上有點C'(C.x, CY) 
+        var CM = getV(C, (A+B)/2).normalized; //C點到AB中點M的向量
+        var AB = getV(A, B);
+        dir = new Vector2(AB.y, -AB.x); //原始值的AB法向量
+        var dir_n = dir.normalized;  
 
-            if(AB.x ==0) //垂直線
-            {
-                dirtype = 0;
-                if(C.x>CX) //C在AB右，dir為-0
-                {
-                    if(Mathf.Sign(dir.x)>0)
-                    {
-                        dir = -dir;
-                    }
-                }
-            }
-            else //水平線
-            {
-                dirtype = 11;
-                if(C.y>CY) //C在AB上，dir為0-
-                {
-                    if(Mathf.Sign(dir.y)>0)
-                    {
-                        dir = -dir;
-                    }
-                }
-            }
-
+        if((CM+dir_n).magnitude > (CM-dir_n).magnitude) //判斷法向量方向是否指向三角形外
+        {
+            print(dir);
+        }
+        else
+        {
+            dir = -dir;
+            print(dir);
         }
 
-        //print("dir = ("+ Mathf.Sign(dir.x)+ ", "+ Mathf.Sign(dir.y)+ ")");
+
     }
 
     //速求p1p2方向向量
@@ -225,16 +166,17 @@ public class prefabBehaviour0 : MonoBehaviour
         return (p2-p1);
     }
 
+    //顯示最長邊面朝方向向量dir
     void showDir()
     {
         var r = Mathf.RoundToInt(Vector2.Distance(new Vector2(0,0),dir));
         var cosine = dir.x/r;
         var theta = Mathf.Acos(cosine)*(180/ Math.PI); 
-        if(theta<90 & dirtype == 4)
+        if(theta<90 & dir.y<0)
         {
             theta = 360-theta;
         }
-        else if(theta >90 & dirtype == 3)//bug
+        else if(theta >90 & dir.y<0)
         {
             theta = 360-theta;
         }
@@ -244,11 +186,18 @@ public class prefabBehaviour0 : MonoBehaviour
         var v = new Vector3(0,0,(float)theta);
         var showdir = Instantiate(dir_obj, Camera.main.ScreenToWorldPoint(new Vector3(M.x, M.y, this.transform.position.z)), Quaternion.Euler(v));
         showdir.transform.parent = this.transform;
+        
+    }
+
+    //產生camera capture材質的物件
+    void CreateCam()
+    {
         if(camOn && tritype == "鈍角三角形")
         {
-            var N = M+ dir/2;
-            var temp = Instantiate(cam_obj, Camera.main.ScreenToWorldPoint(new Vector3(N.x, N.y, 7)), Quaternion.identity);
+            var N = (sides[2].point1+ sides[2].point2)/2 + dir.normalized*150;
+            var temp = Instantiate(cam_obj, Camera.main.ScreenToWorldPoint(new Vector3(N.x, N.y, 8)), Quaternion.Euler(0, 0, 180));
             temp.transform.parent = this.transform;
+            //t7.cam = false; //是否允許場上出現多個使用webcamtexture的物件
         }
     }
 }

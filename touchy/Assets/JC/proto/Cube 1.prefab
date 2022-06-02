@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5243d8dfd83cebb489455e95dfd83306, type: 2}
+  - {fileID: 2100000, guid: 1d63c7475180290499759fed116ecfc3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -110,9 +110,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  tritype: 
-  centercords: {x: 0, y: 0}
+  centercoords: {x: 0, y: 0}
   ABC: []
+  camOn: 0
+  t7: {fileID: 0}
+  tritype: 
+  dirtype: 0
+  dir: {x: 0, y: 0}
+  line_trans: 0
+  dir_obj: {fileID: 0}
+  cam_obj: {fileID: 0}
 --- !u!120 &-6820074547608297250
 LineRenderer:
   m_ObjectHideFlags: 0

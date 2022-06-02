@@ -18,6 +18,8 @@ public class button : MonoBehaviour
         {
             Destroy(tri);
         }
+        var t7 = GameObject.Find("touchcontroller").GetComponent<touch7>();
+        t7.cam = true;
     }
 
     public GameObject CursorController;
@@ -34,15 +36,5 @@ public class button : MonoBehaviour
         
     }
 
-    public bool camOn = false;
-    public int c2 = 0;
-    public void openCam()
-    {
-        c2++;
-        if(c2%2 != 0)
-        {
-            camOn = !camOn;
-        }
-        
-    }
+    
 }
