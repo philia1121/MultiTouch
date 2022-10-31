@@ -7,7 +7,9 @@ using TouchScript.Pointers;
 using UnityEngine.Events;
 using System.Linq; // for ToList(), Except()
 
-//搭配prefabBehaviour0
+//touch6的下一代版本 可分辨三角形類型 畫出三角形並給予線條對應顏色 且指出最長邊的垂直向外向量
+//生成的prefab物件需搭配prefabBehaviour0
+
 public class touch7 : MonoBehaviour
 {
     private Dictionary<int, Vector2> touchy = new Dictionary<int, Vector2>();
@@ -15,7 +17,7 @@ public class touch7 : MonoBehaviour
     public int R = 4;
     private List<Vector2> G,Used = new List<Vector2>();
     private List<int> side = new List<int>();
-    private int cubeID = 1;
+    private int cubeID = 1; //生成記數
     public bool cam;
     
 
@@ -40,20 +42,18 @@ public class touch7 : MonoBehaviour
 
 
     
-    private void pointersPressedHandler(object sender, PointerEventArgs e)//第一個按下接觸點的位置
+    private void pointersPressedHandler(object sender, PointerEventArgs e)
     {
         foreach (var pointer in e.Pointers)
         {
-            //print(pointer.Id + ":pressed" + pointer.Position);
             touchy.Add(pointer.Id, pointer.Position); 
-            //print("pressed");
         }
 
         //printDic();
         G = touchy.Values.ToList(); //讀所有的點
         G = G.Except(Used).ToList(); //去掉已經用過的點
 
-        if(G.Count >= 3) //如果剩下的點超過3個再來看有沒有鄰近可以成組的
+        if(G.Count >= 3) //如果剩下的點超過三個再來看有沒有鄰近可以成組的
         {
             //print("go sort");
             sorting(G,R);
@@ -61,11 +61,10 @@ public class touch7 : MonoBehaviour
         
     }
 
-    private void pointersReleaseHandler(object sender, PointerEventArgs e)//手離開時最後一個接觸點的位置，如果手按下去有移動的話位置會不一樣
+    private void pointersReleaseHandler(object sender, PointerEventArgs e)
     {
         foreach (var pointer in e.Pointers)
         {
-            //print(pointer.Id + ":released"+ pointer.Position);
             if(Used.Contains(touchy[pointer.Id]))
             {
                 Used.Remove(touchy[pointer.Id]);
@@ -103,7 +102,6 @@ public class touch7 : MonoBehaviour
             }
             
             CreateCube(prefab, new Vector3(center.x/3, center.y/3, 8.0f), cubeID, Near, cam);
-            //cam = false; //要有人通知他到底上一次有沒有生webcamcube出來，才知道要不要換
 
         }
         
@@ -132,7 +130,7 @@ public class touch7 : MonoBehaviour
         behaviour.t7 = this.GetComponent<touch7>();
         cubeID++;
 
-        foreach(var p in points) //把生成這個prefab的三個點座標傳過去
+        foreach(var p in points) //把生成這個prefab的三個點座標傳過去 由prefab來判斷自己的三角形類型
         {
             behaviour.ABC.Add(p);
             behaviour.centercoords += p;

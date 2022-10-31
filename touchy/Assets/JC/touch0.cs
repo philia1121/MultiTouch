@@ -6,6 +6,8 @@ using TouchScript;
 using TouchScript.Pointers;
 using UnityEngine.Events;
 
+//TouchScript 最基本的使用方法
+
 public class touch0 : MonoBehaviour
 {
     public Dictionary<int, Vector2> touchy = new Dictionary<int, Vector2>();

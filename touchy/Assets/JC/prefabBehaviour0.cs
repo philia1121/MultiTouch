@@ -8,6 +8,7 @@ using UnityEngine.Events;
 using System;
 
 //登記三角形組成點座標、邊長等資料的多項list
+
 public class points_side : IComparable<points_side>
 {
     public Vector2 point1,point2,corner;
@@ -41,13 +42,15 @@ public class points_side : IComparable<points_side>
 
 }
 
-//搭配touch7
+//搭配touch7使用
+//用來算三角形類型 角度 最長邊之垂直法向量的 基本上都是數學
+
 public class prefabBehaviour0 : MonoBehaviour
 {
     public int id;
     [HideInInspector]public Vector2 centercoords; //三角形重心座標((A+B+C)/3)
     public List<Vector2> ABC = new List<Vector2>(); //接touch端得到的三點
-    public bool camOn;
+    public bool camOn; //是否在特定情況下生成webcam texture物件
     [HideInInspector]public touch7 t7;
 
     [SerializeField]private string tritype;
@@ -189,7 +192,7 @@ public class prefabBehaviour0 : MonoBehaviour
         
     }
 
-    //產生camera capture材質的物件
+    //產生帶camera capture材質的物件
     void CreateCam()
     {
         if(camOn && tritype == "鈍角三角形")
@@ -197,7 +200,6 @@ public class prefabBehaviour0 : MonoBehaviour
             var N = (sides[2].point1+ sides[2].point2)/2 + dir.normalized*150;
             var temp = Instantiate(cam_obj, Camera.main.ScreenToWorldPoint(new Vector3(N.x, N.y, 8)), Quaternion.Euler(0, 0, 180));
             temp.transform.parent = this.transform;
-            //t7.cam = false; //是否允許場上出現多個使用webcamtexture的物件
         }
     }
 }

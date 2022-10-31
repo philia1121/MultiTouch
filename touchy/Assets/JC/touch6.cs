@@ -7,11 +7,13 @@ using TouchScript.Pointers;
 using UnityEngine.Events;
 using System.Linq; // for ToList(), Except()
 
+//可以分類三角形類型(正三角、銳角、鈍角、直角三角形)並生成相應顏色的cube
+
 public class touch6 : MonoBehaviour
 {
     public Dictionary<int, Vector2> touchy = new Dictionary<int, Vector2>();
     
-    public List<Material> mat = new List<Material>();
+    public List<Material> mat = new List<Material>(); //用四種顏色的mat去區分四種三角形判斷結果
     [HideInInspector]
     public List<Vector2> G,Used = new List<Vector2>();
     public List<int> side = new List<int>();
@@ -38,20 +40,19 @@ public class touch6 : MonoBehaviour
 
 
     
-    private void pointersPressedHandler(object sender, PointerEventArgs e)//第一個按下接觸點的位置
+    private void pointersPressedHandler(object sender, PointerEventArgs e)
     {
         foreach (var pointer in e.Pointers)
         {
-            //print(pointer.Id + ":pressed" + pointer.Position);
-            touchy.Add(pointer.Id, pointer.Position); 
-            //print("pressed");
+            //print(pointer.Id + ":released"+ pointer.Position);
+            touchy.Add(pointer.Id, pointer.Position); //Position是按下時接觸點所在的位置
         }
 
         //printDic();
         G = touchy.Values.ToList(); //讀所有的點
         G = G.Except(Used).ToList(); //去掉已經用過的點
 
-        if(G.Count >= 3) //如果剩下的點超過3個再來看有沒有鄰近可以成組的
+        if(G.Count >= 3) //如果剩下的點超過三個再來看有沒有鄰近可以成組的
         {
             //print("go sort");
             sorting(G,3);
@@ -59,11 +60,11 @@ public class touch6 : MonoBehaviour
         
     }
 
-    private void pointersReleaseHandler(object sender, PointerEventArgs e)//手離開時最後一個接觸點的位置，如果手按下去有移動的話位置會不一樣
+    private void pointersReleaseHandler(object sender, PointerEventArgs e)
     {
         foreach (var pointer in e.Pointers)
         {
-            //print(pointer.Id + ":released"+ pointer.Position);
+            //print(pointer.Id + ":released"+ pointer.Position); //Position是手放開時接觸點所在的位置 可能會跟按下去時的不一樣
             if(Used.Contains(touchy[pointer.Id]))
             {
                 Used.Remove(touchy[pointer.Id]);
@@ -85,14 +86,14 @@ public class touch6 : MonoBehaviour
     
 
     public GameObject prefab;
-    void sorting(List<Vector2> All,int radius)
+    void sorting(List<Vector2> All, int radius)
     {
         List<Vector2> Near = new List<Vector2>();
 
         Near.Add(All[0]);
         for(int k = 1; k < All.Count; k++)
         {
-            if(Vector2.Distance(All[0], All[k]) < Screen.width/radius)
+            if(Vector2.Distance(All[0], All[k]) < Screen.width/radius) //如果兩點相距小於(Screen.width/radius)則算成一組
             {
                 Near.Add(All[k]);
             }
@@ -104,15 +105,15 @@ public class touch6 : MonoBehaviour
         }
         else if(Near.Count == 3)
         {
-            Vector3 center = new Vector3(0,0,0);
+            Vector3 center = Vector3.zero;
             foreach(var pos in Near)
             {
                 center = center +  Camera.main.ScreenToWorldPoint(new Vector3(pos.x, pos.y, 8.0f));
-                Used.Add(pos);
+                Used.Add(pos); //把用過(已經組成三角形)的點登記起來
             }
             
-            GetSide(Near);
-            TriangleType(side[0], side[1], side[2]);
+            GetSide(Near); //取三角形三邊長並排序
+            TriangleType(side[0], side[1], side[2]); //用三角形三邊長求cos值 分辨三角形的種類
             Instantiate(prefab, center/3, Quaternion.identity);
         }
         
